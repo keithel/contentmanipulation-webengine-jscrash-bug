@@ -62,7 +62,8 @@ int main(int argc, char * argv[])
     if (argc > 1)
         url = QUrl::fromUserInput(argv[1]);
     else
-        url = QUrl("http://www.google.com/ncr");
+        url = QUrl("http://www.example.com/");
+//        url = QUrl("http://www.google.com/ncr");
     MainWindow *browser = new MainWindow(url);
     browser->resize(1024, 768);
     browser->show();
