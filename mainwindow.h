@@ -76,6 +76,8 @@ protected slots:
 
     void viewSource();
 
+    void runJavaScript(const QString &code);
+
     void highlightAllLinks();
     void toggleHighlightAllLinks(bool checked);
     void rotateImages(bool invert);
@@ -92,4 +94,5 @@ private:
     int progress;
     QAction *toggleHighlightAction;
     QTimer *highlightTimer;
+    bool renderProcessOk = false;
 };

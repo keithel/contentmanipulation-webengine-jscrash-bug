@@ -161,6 +161,7 @@ void MainWindow::finishLoading(bool ok)
 {
     qDebug().noquote().nospace() << "loadFinished(" << ok << ")";
     if(ok) {
+        renderProcessOk = true;
         progress = 100;
         adjustTitle();
         view->page()->runJavaScript(jQuery);
@@ -176,22 +177,32 @@ void MainWindow::handleRenderProcessTerminated(
     QString statusStr = status < 0 ? statusStrings.last() : status > QWebEnginePage::KilledTerminationStatus ? statusStrings.last() : statusStrings[status];
 
     qDebug() << "Render Process" << statusStr << "Exit code:" << exitCode << "Reloading page";
-    QTimer::singleShot(3000, this, [this](){
-        view->reload();
-    });
+    renderProcessOk = false;
+}
+
+void MainWindow::runJavaScript(const QString &code)
+{
+    if(!renderProcessOk)
+    {
+        qWarning() << "Render process is dead";//, reloading and not running javascript";
+//        view->reload();
+//        return;
+    }
+
+    view->page()->runJavaScript(code);
 }
 
 void MainWindow::highlightAllLinks()
 {
     QString code = QStringLiteral("qt.jQuery('a').each( function () { qt.jQuery(this).css('background-color', 'yellow') } )");
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
 
 void MainWindow::toggleHighlightAllLinks(bool checked)
 {
     QString color = checked ? "yellow" : "";
     QString code = QStringLiteral("qt.jQuery('a').each( function () { qt.jQuery(this).css('background-color', '%1') } )").arg(color);
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
 
 void MainWindow::rotateImages(bool invert)
@@ -202,29 +213,29 @@ void MainWindow::rotateImages(bool invert)
         code = QStringLiteral("qt.jQuery('img').each( function () { qt.jQuery(this).css('transition', 'transform 2s'); qt.jQuery(this).css('transform', 'rotate(180deg)') } )");
     else
         code = QStringLiteral("qt.jQuery('img').each( function () { qt.jQuery(this).css('transition', 'transform 2s'); qt.jQuery(this).css('transform', 'rotate(0deg)') } )");
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
 
 void MainWindow::removeGifImages()
 {
     QString code = QStringLiteral("qt.jQuery('[src*=gif]').remove()");
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
 
 void MainWindow::removeInlineFrames()
 {
     QString code = QStringLiteral("qt.jQuery('iframe').remove()");
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
 
 void MainWindow::removeObjectElements()
 {
     QString code = QStringLiteral("qt.jQuery('object').remove()");
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
 
 void MainWindow::removeEmbeddedElements()
 {
     QString code = QStringLiteral("qt.jQuery('embed').remove()");
-    view->page()->runJavaScript(code);
+    runJavaScript(code);
 }
