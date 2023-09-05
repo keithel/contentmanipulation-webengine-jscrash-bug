@@ -84,10 +84,16 @@ RendererKillerTimer::RendererKillerTimer(QObject *parent)
 {
     setSingleShot(false);
     connect(this, &QTimer::timeout, this, [this](){
+        size_t numRenderersKilled = 0;
         QSet<ProcessInfo> descendantProcInfos = getDescendantProcInfo("QtWebEngineProc");
         for(auto& procInfo : qAsConst(descendantProcInfos)) {
-            if (procInfo.commandLine.contains("renderer"))
+            if (procInfo.commandLine.contains("renderer")) {
                 killPid(procInfo.pid);
+                numRenderersKilled++;
+            }
         }
+
+        if (numRenderersKilled)
+            qDebug().noquote() << "Found and killed" << numRenderersKilled << "render processes";
     });
 }
