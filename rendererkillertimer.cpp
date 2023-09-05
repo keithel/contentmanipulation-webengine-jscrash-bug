@@ -16,6 +16,13 @@ uint qHash(const ProcessInfo &key, uint seed)
     return qHash(key.pid, seed) ^ key.ppid;
 }
 
+RendererKillerTimer::RendererKillerTimer(QObject *parent)
+    : QTimer{parent}
+{
+    setSingleShot(false);
+    connect(this, &QTimer::timeout, this, &RendererKillerTimer::killRenderer);
+}
+
 void RendererKillerTimer::getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &childProcInfos, const QString& commandLineContains)
 {
     QProcess ps;
@@ -63,7 +70,7 @@ QSet<ProcessInfo> RendererKillerTimer::getDescendantProcInfo(const QString &comm
     return childProcInfos;
 }
 
-bool RendererKillerTimer::killPid(const qint64 pid)
+void RendererKillerTimer::killPid(const qint64 pid)
 {
     QProcess killProcess;
     killProcess.start("kill", QStringList() << "-9" << QString::number(pid));
@@ -72,28 +79,20 @@ bool RendererKillerTimer::killPid(const qint64 pid)
     if (killProcess.exitStatus() != QProcess::NormalExit || killProcess.exitCode() != 0)
     {
         qDebug() << "Failed to kill process with PID:" << pid;
-        return false;
     }
-
-    return true; // Return true if the process was successfully killed.
 }
 
-
-RendererKillerTimer::RendererKillerTimer(QObject *parent)
-    : QTimer{parent}
+void RendererKillerTimer::killRenderer()
 {
-    setSingleShot(false);
-    connect(this, &QTimer::timeout, this, [this](){
-        size_t numRenderersKilled = 0;
-        QSet<ProcessInfo> descendantProcInfos = getDescendantProcInfo("QtWebEngineProc");
-        for(auto& procInfo : qAsConst(descendantProcInfos)) {
-            if (procInfo.commandLine.contains("renderer")) {
-                killPid(procInfo.pid);
-                numRenderersKilled++;
-            }
+    size_t numRenderersKilled = 0;
+    QSet<ProcessInfo> descendantProcInfos = getDescendantProcInfo("QtWebEngineProc");
+    for(auto& procInfo : qAsConst(descendantProcInfos)) {
+        if (procInfo.commandLine.contains("renderer")) {
+            killPid(procInfo.pid);
+            numRenderersKilled++;
         }
+    }
 
-        if (numRenderersKilled)
-            qDebug().noquote() << "Found and killed" << numRenderersKilled << "render processes";
-    });
+    if (numRenderersKilled)
+        qDebug().noquote() << "Found and killed" << numRenderersKilled << "render processes";
 }

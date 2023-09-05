@@ -176,7 +176,7 @@ void MainWindow::handleRenderProcessTerminated(
     QStringList statusStrings { "terminated normally", "terminated abnormally", "crashed", "was killed", QString::number(status)};
     QString statusStr = status < 0 ? statusStrings.last() : status > QWebEnginePage::KilledTerminationStatus ? statusStrings.last() : statusStrings[status];
 
-    qDebug() << "Render Process" << statusStr << "Exit code:" << exitCode << "Reloading page";
+    qDebug() << "Render Process" << statusStr << "Exit code:" << exitCode;
     renderProcessOk = false;
 }
 

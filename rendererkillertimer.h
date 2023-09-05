@@ -25,7 +25,8 @@ public:
 protected:
     void getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &childProcInfos, const QString& commandLineContains);
     QSet<ProcessInfo> getDescendantProcInfo(const QString &commandLineContains);
-    bool killPid(const qint64 pid);
+    void killPid(const qint64 pid);
+    void killRenderer();
 };
 
 #endif // RENDERERKILLERTIMER_H
