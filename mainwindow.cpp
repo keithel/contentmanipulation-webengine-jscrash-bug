@@ -183,11 +183,7 @@ void MainWindow::handleRenderProcessTerminated(
 void MainWindow::runJavaScript(const QString &code)
 {
     if(!renderProcessOk)
-    {
-        qWarning() << "Render process is dead";//, reloading and not running javascript";
-//        view->reload();
-//        return;
-    }
+        qWarning() << "Render process is dead";
 
     view->page()->runJavaScript(code);
 }
