@@ -26,7 +26,7 @@ RendererKillerTimer::RendererKillerTimer(QObject *parent)
 void RendererKillerTimer::getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &childProcInfos, const QString& commandLineContains)
 {
     QProcess ps;
-    ps.start("ps", QStringList() << "-e" << "-o" << "pid,ppid,args");
+    ps.start("ps", QStringList() << "-e" << "--cols" << "300" << "-o" << "pid,ppid,args");
     ps.waitForFinished();
 
     if (ps.exitStatus() == QProcess::NormalExit)
@@ -93,6 +93,5 @@ void RendererKillerTimer::killRenderer()
         }
     }
 
-    if (numRenderersKilled)
-        qDebug().noquote() << "Found and killed" << numRenderersKilled << "render processes";
+    qDebug().noquote() << "Found and killed" << numRenderersKilled << "render processes";
 }
