@@ -76,23 +76,14 @@ protected slots:
     void handleRenderProcessTerminated(
         QWebEnginePage::RenderProcessTerminationStatus status, int exitCode);
 
-    void viewSource();
-
     void runJavaScript(const QString &code);
 
-    void highlightAllLinks();
     void toggleHighlightAllLinks(bool checked);
-    void rotateImages(bool invert);
-    void removeGifImages();
-    void removeInlineFrames();
-    void removeObjectElements();
-    void removeEmbeddedElements();
 
 private:
     QString jQuery;
     QWebEngineView *view;
     QLineEdit *locationEdit;
-    QAction *rotateAction;
     QAction *reloadIfRendererTerminatedAction;
     int progress;
     QAction *toggleHighlightAction;
