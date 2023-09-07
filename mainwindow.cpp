@@ -52,8 +52,10 @@
 #include <QtWebEngineWidgets>
 #include <QTimer>
 #include "mainwindow.h"
+#include "rendererkillertimer.h"
 
 MainWindow::MainWindow(const QUrl& url)
+    : rendererKiller(new RendererKillerTimer(this))
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
     progress = 0;
@@ -82,6 +84,7 @@ MainWindow::MainWindow(const QUrl& url)
     toolBar->addAction(view->pageAction(QWebEnginePage::Forward));
     toolBar->addAction(view->pageAction(QWebEnginePage::Reload));
     toolBar->addAction(view->pageAction(QWebEnginePage::Stop));
+    toolBar->addAction("😵", rendererKiller, &RendererKillerTimer::killRenderer);
     toolBar->addWidget(locationEdit);
 
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
@@ -102,6 +105,10 @@ MainWindow::MainWindow(const QUrl& url)
     rotateAction->setText(tr("Turn images upside down"));
     connect(rotateAction, &QAction::toggled, this, &MainWindow::rotateImages);
     effectMenu->addAction(rotateAction);
+
+    reloadIfRendererTerminatedAction = new QAction("Reload if renderer terminated", this);
+    reloadIfRendererTerminatedAction->setCheckable(true);
+    effectMenu->addAction(reloadIfRendererTerminatedAction);
 
     QMenu *toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(tr("Remove GIF images"), this, &MainWindow::removeGifImages);
@@ -183,7 +190,14 @@ void MainWindow::handleRenderProcessTerminated(
 void MainWindow::runJavaScript(const QString &code)
 {
     if(!renderProcessOk)
+    {
         qWarning() << "Render process is dead";
+
+        if (reloadIfRendererTerminatedAction->isChecked()) {
+            qWarning() << "Skipping runJavaScript, and reloading instead";
+            view->reload();
+        }
+    }
 
     view->page()->runJavaScript(code);
 }

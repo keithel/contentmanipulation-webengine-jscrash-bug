@@ -68,8 +68,8 @@ int main(int argc, char * argv[])
     browser->resize(1024, 768);
     browser->show();
 
-    RendererKillerTimer *rendererKiller = new RendererKillerTimer(browser);
-    rendererKiller->start(5000);
+    RendererKillerTimer rendererKiller(browser);
+    rendererKiller.start(5000);
 
     return app.exec();
 }

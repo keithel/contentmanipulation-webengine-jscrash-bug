@@ -22,11 +22,13 @@ class RendererKillerTimer : public QTimer
 public:
     explicit RendererKillerTimer(QObject *parent = nullptr);
 
+public slots:
+    void killRenderer();
+
 protected:
     void getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &childProcInfos, const QString& commandLineContains);
     QSet<ProcessInfo> getDescendantProcInfo(const QString &commandLineContains);
     void killPid(const qint64 pid);
-    void killRenderer();
 };
 
 #endif // RENDERERKILLERTIMER_H

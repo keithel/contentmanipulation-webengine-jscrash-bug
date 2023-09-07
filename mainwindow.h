@@ -57,6 +57,8 @@ class QLineEdit;
 class QTimer;
 QT_END_NAMESPACE
 
+class RendererKillerTimer;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -91,8 +93,10 @@ private:
     QWebEngineView *view;
     QLineEdit *locationEdit;
     QAction *rotateAction;
+    QAction *reloadIfRendererTerminatedAction;
     int progress;
     QAction *toggleHighlightAction;
     QTimer *highlightTimer;
     bool renderProcessOk = false;
+    RendererKillerTimer *rendererKiller = nullptr;
 };
