@@ -32,18 +32,8 @@ target_link_libraries(contentmanipulation PUBLIC
     Qt::WebEngineWidgets
 )
 
+add_subdirectory(resources)
 
-# Resources:
-set(jquery_resource_files
-    "jquery.min.js"
-)
-
-qt_add_resources(contentmanipulation "jquery"
-    PREFIX
-        "/"
-    FILES
-        ${jquery_resource_files}
-)
 
 install(TARGETS contentmanipulation
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
