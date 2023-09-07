@@ -52,10 +52,10 @@
 #include <QtWebEngineWidgets>
 #include <QTimer>
 #include "mainwindow.h"
-#include "rendererkillertimer.h"
+#include "rendererkiller.h"
 
 MainWindow::MainWindow(const QUrl& url)
-    : rendererKiller(new RendererKillerTimer(this))
+    : rendererKiller(new RendererKiller(this))
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
     progress = 0;
@@ -84,7 +84,7 @@ MainWindow::MainWindow(const QUrl& url)
     toolBar->addAction(view->pageAction(QWebEnginePage::Forward));
     toolBar->addAction(view->pageAction(QWebEnginePage::Reload));
     toolBar->addAction(view->pageAction(QWebEnginePage::Stop));
-    toolBar->addAction("😵", rendererKiller, &RendererKillerTimer::killRenderer);
+    toolBar->addAction("😵", rendererKiller, &RendererKiller::killRenderer);
     toolBar->addWidget(locationEdit);
 
     QMenu *viewMenu = menuBar()->addMenu(tr("&View"));

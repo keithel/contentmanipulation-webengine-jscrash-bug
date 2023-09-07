@@ -1,4 +1,4 @@
-#include "rendererkillertimer.h"
+#include "rendererkiller.h"
 #include <QProcess>
 #include <QCoreApplication>
 
@@ -16,14 +16,14 @@ uint qHash(const ProcessInfo &key, uint seed)
     return qHash(key.pid, seed) ^ key.ppid;
 }
 
-RendererKillerTimer::RendererKillerTimer(QObject *parent)
+RendererKiller::RendererKiller(QObject *parent)
     : QTimer{parent}
 {
     setSingleShot(false);
-    connect(this, &QTimer::timeout, this, &RendererKillerTimer::killRenderer);
+    connect(this, &QTimer::timeout, this, &RendererKiller::killRenderer);
 }
 
-void RendererKillerTimer::getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &childProcInfos, const QString& commandLineContains)
+void RendererKiller::getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &childProcInfos, const QString& commandLineContains)
 {
     QProcess ps;
     ps.start("ps", QStringList() << "-e" << "--cols" << "300" << "-o" << "pid,ppid,args");
@@ -63,14 +63,14 @@ void RendererKillerTimer::getDescendantProcInfo(qint64 pid, QSet<ProcessInfo> &c
     }
 }
 
-QSet<ProcessInfo> RendererKillerTimer::getDescendantProcInfo(const QString &commandLineContains)
+QSet<ProcessInfo> RendererKiller::getDescendantProcInfo(const QString &commandLineContains)
 {
     QSet<ProcessInfo> childProcInfos;
     getDescendantProcInfo(QCoreApplication::applicationPid(), childProcInfos, commandLineContains);
     return childProcInfos;
 }
 
-void RendererKillerTimer::killPid(const qint64 pid)
+void RendererKiller::killPid(const qint64 pid)
 {
     QProcess killProcess;
     killProcess.start("kill", QStringList() << "-9" << QString::number(pid));
@@ -82,7 +82,7 @@ void RendererKillerTimer::killPid(const qint64 pid)
     }
 }
 
-void RendererKillerTimer::killRenderer()
+void RendererKiller::killRenderer()
 {
     size_t numRenderersKilled = 0;
     QSet<ProcessInfo> descendantProcInfos = getDescendantProcInfo("QtWebEngineProc");

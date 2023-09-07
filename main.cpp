@@ -50,7 +50,6 @@
 
 #include <QtWidgets>
 #include "mainwindow.h"
-#include "rendererkillertimer.h"
 #include <qtwebenginewidgetsglobal.h>
 
 int main(int argc, char * argv[])
@@ -67,9 +66,6 @@ int main(int argc, char * argv[])
     MainWindow *browser = new MainWindow(url);
     browser->resize(1024, 768);
     browser->show();
-
-    RendererKillerTimer rendererKiller(browser);
-    rendererKiller.start(5000);
 
     return app.exec();
 }

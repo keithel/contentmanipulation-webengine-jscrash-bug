@@ -20,7 +20,7 @@ find_package(Qt6 COMPONENTS WebEngineWidgets)
 qt_add_executable(contentmanipulation
     main.cpp
     mainwindow.cpp mainwindow.h
-    rendererkillertimer.h rendererkillertimer.cpp
+    rendererkiller.h rendererkiller.cpp
 )
 set_target_properties(contentmanipulation PROPERTIES
     WIN32_EXECUTABLE TRUE

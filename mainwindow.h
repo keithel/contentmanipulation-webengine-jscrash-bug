@@ -57,7 +57,7 @@ class QLineEdit;
 class QTimer;
 QT_END_NAMESPACE
 
-class RendererKillerTimer;
+class RendererKiller;
 
 class MainWindow : public QMainWindow
 {
@@ -98,5 +98,5 @@ private:
     QAction *toggleHighlightAction;
     QTimer *highlightTimer;
     bool renderProcessOk = false;
-    RendererKillerTimer *rendererKiller = nullptr;
+    RendererKiller *rendererKiller = nullptr;
 };

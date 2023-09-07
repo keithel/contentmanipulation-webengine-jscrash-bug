@@ -1,5 +1,5 @@
-#ifndef RENDERERKILLERTIMER_H
-#define RENDERERKILLERTIMER_H
+#ifndef RENDERERKILLER_H
+#define RENDERERKILLER_H
 
 #include <QTimer>
 #include <QString>
@@ -16,11 +16,11 @@ struct ProcessInfo {
 bool operator==(const ProcessInfo &a, const ProcessInfo &b);
 uint qHash(const ProcessInfo &key, uint seed);
 
-class RendererKillerTimer : public QTimer
+class RendererKiller : public QTimer
 {
     Q_OBJECT
 public:
-    explicit RendererKillerTimer(QObject *parent = nullptr);
+    explicit RendererKiller(QObject *parent = nullptr);
 
 public slots:
     void killRenderer();
@@ -31,4 +31,4 @@ protected:
     void killPid(const qint64 pid);
 };
 
-#endif // RENDERERKILLERTIMER_H
+#endif // RENDERERKILLER_H
